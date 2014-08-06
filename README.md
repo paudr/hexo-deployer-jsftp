@@ -68,10 +68,6 @@ Execute the following command. Don't forget to disable the plugin before uninsta
 npm uninstall hexo-deployer-jsftp
 ```
 
-[
-
-
 ----------
 
-
-Hexo]: http://hexo.io
+[Hexo]: http://hexo.io
