@@ -1,0 +1,28 @@
+{
+  "name": "hexo-deployer-jsftp",
+  "version": "1.0.0",
+  "description": "FTP deployer plugin for http://hexo.io",
+  "main": "index",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frikeldon/hexo-deployer-jsftp"
+  },
+  "bugs": {
+    "url": "https://github.com/frikeldon/hexo-deployer-jsftp/issues"
+  },
+  "keywords": [
+    "hexo",
+    "hexo.io",
+    "ftp",
+    "deploy",
+    "deployer"
+  ],
+  "author": "Pau Drudis <frikeldon@gmail.com> (http://www.paudr.com)",
+  "license": {
+    "type": "MIT",
+    "url": "https://raw.githubusercontent.com/frikeldon/hexo-deployer-jsftp/master/LICENSE"
+  },
+  "dependencies": {
+    "ftp": "~0.3.7"
+  }
+}
