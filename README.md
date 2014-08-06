@@ -22,15 +22,16 @@ deploy:
 
 ### Configure
 
-Add `host`, `user` and `root` to `deploy` in `_config.yml`.
+Add `connection.host`, `connection.port`, `connection.user`, `connection.password` and `root` to `deploy` in `_config.yml`.
 
 ```
 deploy:
   type: ftp
-  host: <ftp host>
-  port: <ftp port>
-  user: <ftp user>
-  password: <ftp password>
+  connection:
+    host: <ftp host>
+    port: <ftp port>
+    user: <ftp user>
+    password: <ftp password>
   root: <path/to/your/blog/on/the/server>
 ```
 
