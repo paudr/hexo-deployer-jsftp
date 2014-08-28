@@ -1,6 +1,6 @@
 {
   "name": "hexo-deployer-jsftp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "FTP deployer plugin for http://hexo.io",
   "main": "index",
   "repository": {

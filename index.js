@@ -4,12 +4,12 @@ var fs = require('fs'),
 var client = new Ftp();
 var count;
 
-var public_dir = hexo.config.public_dir || './public';
+var public_dir = hexo.base_dir + (hexo.config.public_dir || '/public');
 if (public_dir.slice(-1) === '/') {
   public_dir = public_dir.substring(0, public_dir.length - 1);
 }
 
-function listFiles (path, callback) {
+function listFiles(path, callback) {
 
   var results = {
     'path': path,
@@ -17,10 +17,10 @@ function listFiles (path, callback) {
     'directories': {}
   };
 
-  fs.readdir(path, function(error, list) {
+  fs.readdir(path, function (error, list) {
 
     if (error) {
-      return callback(err);
+      return callback(error);
     }
 
     var pending = list.length;
@@ -29,15 +29,15 @@ function listFiles (path, callback) {
       return callback(null, results);
     }
 
-    list.forEach(function(file) {
+    list.forEach(function (file) {
 
       var fullPath = path + '/' + file;
 
-      fs.stat(fullPath, function(error, stat) {
+      fs.stat(fullPath, function (error, stat) {
 
         if (stat && stat.isDirectory()) {
 
-          listFiles(fullPath, function(error, res) {
+          listFiles(fullPath, function (error, res) {
 
             results.directories[file] = res;
 
@@ -137,14 +137,29 @@ function uploadDirectory (structure, callback) {
 
 function getConnOpts(args) {
 
-  var connOpts = {};
+  var connOpts = {},
+
+    setConnProp = function(prop) {
+      if(typeof args.connection[prop] !== 'undefined') {
+        connOpts[prop] = args.connection[prop];
+      }
+    },
+
+    readCert = function(prop) {
+      if(connOpts.secureOptions[prop + 'Path'] && fs.existsSync(connOpts.secureOptions[prop + 'Path'])) {
+        connOpts.secureOptions[prop] = fs.readFileSync(connOpts.secureOptions[prop + 'Path']);
+      }
+    };
 
   if (args.connection) {
 
-    connOpts.host = args.connection.host;
-    connOpts.port = args.connection.port;
-    connOpts.user = args.connection.user;
-    connOpts.password = args.connection.password;
+    ['host', 'port', 'secure', 'secureOptions', 'user', 'password', 'connTimeout', 'pasvTimeout', 'keepalive'].forEach(setConnProp);
+
+    if(connOpts.secureOptions) {
+
+      ['pfx', 'key', 'ca', 'cert'].forEach(readCert);
+
+    }
 
   }
 
@@ -186,22 +201,26 @@ hexo.extend.deployer.register('ftp', function (args, callback) {
 
     client.on('ready', function () {
 
-      client.cwd(root, function (error, currentDir) {
+      client.mkdir(root, function(error) {
 
-        if (error) {
-          return finish(error);
-        }
-
-        uploadDirectory(structure, function (error) {
+        client.cwd(root, function (error, currentDir) {
 
           if (error) {
             return finish(error);
           }
 
-          var elapsed = ( Date.now() - start) / 1000;
+          uploadDirectory(structure, function (error) {
 
-          hexo.log.log('upload', '%d files uploaded in %ss', count, elapsed.toFixed(3));
-          return finish();
+            if (error) {
+              return finish(error);
+            }
+
+            var elapsed = (Date.now() - start) / 1000;
+
+            hexo.log.log('upload', '%d files uploaded in %ss', count, elapsed.toFixed(3));
+            return finish();
+
+          });
 
         });
 
