@@ -179,7 +179,7 @@ function getConnOpts(args) {
 
 hexo.extend.deployer.register('ftp', function (args, callback) {
 
-  hexo.log.setAlias('upload', 'info');
+  // hexo.log.setAlias('upload', 'info'); // not such setAlias function for hexo-log.
 
   var start = Date.now();
   count = 0;
